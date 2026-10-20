@@ -1,6 +1,10 @@
 **SS HASIL POSTMAN**
+**GET**
 <img width="1919" height="1037" alt="image" src="https://github.com/user-attachments/assets/ae33c901-73aa-4273-88b7-e005f1f755ca" />
-
+**POST**
+<img width="1919" height="1037" alt="Screenshot 2026-10-20 101702" src="https://github.com/user-attachments/assets/50cab02e-6a66-48f9-ba0a-109a36d7f61b" />
+**DELETE**
+<img width="1919" height="1032" alt="Screenshot 2026-10-20 101724" src="https://github.com/user-attachments/assets/11ce391d-1499-4935-a4f1-897034e9ff16" />
 **SS HASIL CHROME**
 <img width="1919" height="990" alt="Screenshot 2026-10-20 094325" src="https://github.com/user-attachments/assets/8cb67788-f9a5-4cfc-928c-e647c22bbc89" />
 
