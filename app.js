@@ -1,5 +1,5 @@
 import express from "express";
-import { parseId, validateBiodata } from "./validation.js";
+import { parseId, parsePositiveInteger, validateBiodata } from "./validation.js";
 
 export function createApp(pool) {
   const app = express();
@@ -13,6 +13,31 @@ export function createApp(pool) {
   };
 
   const getAll = (req, res) => {
+    const hasPagination = req.query.page !== undefined || req.query.limit !== undefined;
+    if (hasPagination) {
+      const page = parsePositiveInteger(req.query.page, 1);
+      const limit = parsePositiveInteger(req.query.limit, 20);
+      if (page === null || limit === null || limit > 100) {
+        return res.status(400).json({ message: "page dan limit harus angka positif, limit maksimal 100" });
+      }
+      const offset = (page - 1) * limit;
+      if (!Number.isSafeInteger(offset)) {
+        return res.status(400).json({ message: "page terlalu besar" });
+      }
+      return Promise.all([
+        pool.query("SELECT * FROM biodata ORDER BY id LIMIT $1 OFFSET $2", [limit, offset]),
+        pool.query("SELECT COUNT(*) AS total FROM biodata"),
+      ])
+        .then(([result, count]) => {
+          const total = Number(count.rows[0].total);
+          res.json({
+            data: result.rows,
+            pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+          });
+        })
+        .catch((err) => serverError(res, err));
+    }
+
     pool
       .query("SELECT * FROM biodata ORDER BY id")
       .then((result) => res.json(result.rows))

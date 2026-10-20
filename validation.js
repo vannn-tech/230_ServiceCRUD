@@ -7,6 +7,18 @@ export function parseId(value) {
   return Number.isSafeInteger(id) && id > 0 ? id : null;
 }
 
+export function parsePositiveInteger(value, fallback) {
+  if (value === undefined) {
+    return fallback;
+  }
+  if (typeof value !== "string" || !/^\d+$/.test(value)) {
+    return null;
+  }
+
+  const number = Number(value);
+  return Number.isSafeInteger(number) && number > 0 ? number : null;
+}
+
 export function validateBiodata(body) {
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     return { error: "Data harus berupa object" };

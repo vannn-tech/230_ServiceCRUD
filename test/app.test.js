@@ -27,6 +27,35 @@ test("GET /biodata mengembalikan daftar data", async () => {
   assert.deepEqual(await response.json(), rows);
 });
 
+test("GET /biodata bisa pakai paginasi", async () => {
+  const rows = [{ id: 3, nama: "Cici", nim: "789", kelas: "TI-5C" }];
+  const response = await requestApi(
+    async (sql, values) => {
+      if (sql.includes("COUNT(*)")) {
+        return { rows: [{ total: "5" }] };
+      }
+      assert.deepEqual(values, [2, 2]);
+      return { rows };
+    },
+    "/biodata?page=2&limit=2"
+  );
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), {
+    data: rows,
+    pagination: { page: 2, limit: 2, total: 5, totalPages: 3 },
+  });
+});
+
+test("GET /biodata menolak limit di atas batas", async () => {
+  const response = await requestApi(
+    () => assert.fail("Query tidak seharusnya dipanggil"),
+    "/biodata?limit=101"
+  );
+
+  assert.equal(response.status, 400);
+});
+
 test("GET /biodata/:id mengembalikan data yang cocok", async () => {
   const row = { id: 2, nama: "Budi", nim: "456", kelas: "TI-5B" };
   const response = await requestApi(
