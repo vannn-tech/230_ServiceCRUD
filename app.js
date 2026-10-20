@@ -129,6 +129,41 @@ export function createApp(pool) {
       });
   });
 
+  app.patch("/biodata/:id", (req, res) => {
+    const id = parseId(req.params.id);
+    if (id === null) {
+      return res.status(400).json({ message: "id harus berupa angka" });
+    }
+
+    const validation = validateBiodata(req.body, { partial: true });
+    if (validation.error) {
+      return res.status(400).json({ message: validation.error });
+    }
+
+    const fields = Object.keys(validation.data);
+    const assignments = fields.map((field, index) => `${field}=$${index + 1}`).join(", ");
+    const values = fields.map((field) => validation.data[field]);
+    values.push(id);
+
+    pool
+      .query(
+        `UPDATE biodata SET ${assignments} WHERE id=$${values.length} RETURNING *`,
+        values
+      )
+      .then((result) => {
+        if (result.rowCount === 0) {
+          return res.status(404).json({ message: "Data tidak ditemukan" });
+        }
+        res.json({ message: "Data berhasil diupdate", data: result.rows[0] });
+      })
+      .catch((err) => {
+        if (err.code === "23505") {
+          return res.status(409).json({ message: "NIM sudah terdaftar" });
+        }
+        serverError(res, err);
+      });
+  });
+
   app.delete("/biodata/:id", (req, res) => {
     const id = parseId(req.params.id);
     if (id === null) {

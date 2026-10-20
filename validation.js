@@ -19,15 +19,23 @@ export function parsePositiveInteger(value, fallback) {
   return Number.isSafeInteger(number) && number > 0 ? number : null;
 }
 
-export function validateBiodata(body) {
+export function validateBiodata(body, { partial = false } = {}) {
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     return { error: "Data harus berupa object" };
   }
 
   const limits = { nama: 100, nim: 20, kelas: 20 };
   const data = {};
+  const fields = Object.keys(limits);
+
+  if (partial && !fields.some((field) => Object.hasOwn(body, field))) {
+    return { error: "Isi minimal satu field biodata" };
+  }
 
   for (const [field, maxLength] of Object.entries(limits)) {
+    if (partial && !Object.hasOwn(body, field)) {
+      continue;
+    }
     const value = body[field];
     if (typeof value !== "string" || !value.trim()) {
       return { error: `${field} wajib diisi dengan teks` };
