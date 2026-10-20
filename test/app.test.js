@@ -42,6 +42,21 @@ test("GET /biodata/:id mengembalikan data yang cocok", async () => {
   assert.deepEqual(await response.json(), row);
 });
 
+test("GET /biodata/nim/:nim mencari data lewat NIM", async () => {
+  const row = { id: 2, nama: "Budi", nim: "456", kelas: "TI-5B" };
+  const response = await requestApi(
+    async (sql, values) => {
+      assert.match(sql, /WHERE nim = \$1/);
+      assert.deepEqual(values, ["456"]);
+      return { rows: [row], rowCount: 1 };
+    },
+    "/biodata/nim/456"
+  );
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), row);
+});
+
 test("POST /biodata menambahkan data", async () => {
   const row = { id: 3, nama: "Cici", nim: "789", kelas: "TI-5C" };
   const response = await requestApi(

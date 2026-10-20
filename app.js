@@ -21,6 +21,22 @@ export function createApp(pool) {
   app.get("/", getAll);
   app.get("/biodata", getAll);
 
+  app.get("/biodata/nim/:nim", (req, res) => {
+    const nim = req.params.nim.trim();
+    if (!nim || nim.length > 20) {
+      return res.status(400).json({ message: "nim harus diisi maksimal 20 karakter" });
+    }
+    pool
+      .query("SELECT * FROM biodata WHERE nim = $1", [nim])
+      .then((result) => {
+        if (result.rowCount === 0) {
+          return res.status(404).json({ message: "Data tidak ditemukan" });
+        }
+        res.json(result.rows[0]);
+      })
+      .catch((err) => serverError(res, err));
+  });
+
   app.get("/biodata/:id", (req, res) => {
     const id = parseId(req.params.id);
     if (id === null) {
