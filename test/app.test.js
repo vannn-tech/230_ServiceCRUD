@@ -176,6 +176,33 @@ test("PATCH /biodata/:id menolak body tanpa field yang bisa diubah", async () =>
   assert.equal(response.status, 400);
 });
 
+test("error database tidak membocorkan detail ke response", async () => {
+  const response = await requestApi(
+    async () => {
+      throw new Error("detail rahasia database");
+    },
+    "/biodata"
+  );
+
+  assert.equal(response.status, 500);
+  assert.deepEqual(await response.json(), { message: "Internal Server Error" });
+});
+
+test("format JSON yang salah dibalas dengan error API", async () => {
+  const response = await requestApi(
+    () => assert.fail("Query tidak seharusnya dipanggil"),
+    "/biodata",
+    {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: "{",
+    }
+  );
+
+  assert.equal(response.status, 400);
+  assert.deepEqual(await response.json(), { message: "Format JSON tidak valid" });
+});
+
 test("GET /biodata/:id menolak id yang bukan angka", async () => {
   const response = await requestApi(
     () => assert.fail("Query tidak seharusnya dipanggil"),

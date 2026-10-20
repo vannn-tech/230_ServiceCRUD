@@ -9,7 +9,7 @@ export function createApp(pool) {
 
   const serverError = (res, err) => {
     console.error(err);
-    res.status(500).json({ message: "Internal Server Error", detail: err.message });
+    res.status(500).json({ message: "Internal Server Error" });
   };
 
   const getAll = (req, res) => {
@@ -178,6 +178,16 @@ export function createApp(pool) {
         res.json({ message: "Data berhasil dihapus", data: result.rows[0] });
       })
       .catch((err) => serverError(res, err));
+  });
+
+  app.use((err, req, res, next) => {
+    if (res.headersSent) {
+      return next(err);
+    }
+    if (err.type === "entity.parse.failed") {
+      return res.status(400).json({ message: "Format JSON tidak valid" });
+    }
+    serverError(res, err);
   });
 
   return app;
