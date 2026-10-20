@@ -64,6 +64,38 @@ test("POST /biodata menambahkan data", async () => {
   });
 });
 
+test("POST /biodata merapikan spasi sebelum disimpan", async () => {
+  const response = await requestApi(
+    async (_sql, values) => {
+      assert.deepEqual(values, ["Ayu", "123", "TI-5A"]);
+      return { rows: [{ id: 4, nama: "Ayu", nim: "123", kelas: "TI-5A" }] };
+    },
+    "/biodata",
+    {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ nama: " Ayu ", nim: " 123 ", kelas: " TI-5A " }),
+    }
+  );
+
+  assert.equal(response.status, 201);
+});
+
+test("POST /biodata menolak data kosong atau format yang salah", async () => {
+  for (const body of [[], { nama: "   ", nim: "123", kelas: "TI-5A" }]) {
+    const response = await requestApi(
+      () => assert.fail("Query tidak seharusnya dipanggil"),
+      "/biodata",
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body),
+      }
+    );
+    assert.equal(response.status, 400);
+  }
+});
+
 test("GET /biodata/:id menolak id yang bukan angka", async () => {
   const response = await requestApi(
     () => assert.fail("Query tidak seharusnya dipanggil"),

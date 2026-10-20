@@ -1,5 +1,5 @@
 import express from "express";
-import { parseId } from "./validation.js";
+import { parseId, validateBiodata } from "./validation.js";
 
 export function createApp(pool) {
   const app = express();
@@ -38,10 +38,11 @@ export function createApp(pool) {
   });
 
   app.post("/biodata", (req, res) => {
-    const { nama, nim, kelas } = req.body;
-    if (!nama || !nim || !kelas) {
-      return res.status(400).json({ message: "nama, nim, dan kelas wajib diisi" });
+    const validation = validateBiodata(req.body);
+    if (validation.error) {
+      return res.status(400).json({ message: validation.error });
     }
+    const { nama, nim, kelas } = validation.data;
     pool
       .query(
         "INSERT INTO biodata (nama, nim, kelas) VALUES ($1, $2, $3) RETURNING *",
@@ -60,13 +61,14 @@ export function createApp(pool) {
 
   app.put("/biodata/:id", (req, res) => {
     const id = parseId(req.params.id);
-    const { nama, nim, kelas } = req.body;
     if (id === null) {
       return res.status(400).json({ message: "id harus berupa angka" });
     }
-    if (!nama || !nim || !kelas) {
-      return res.status(400).json({ message: "nama, nim, dan kelas wajib diisi" });
+    const validation = validateBiodata(req.body);
+    if (validation.error) {
+      return res.status(400).json({ message: validation.error });
     }
+    const { nama, nim, kelas } = validation.data;
     pool
       .query(
         "UPDATE biodata SET nama=$1, nim=$2, kelas=$3 WHERE id=$4 RETURNING *",
