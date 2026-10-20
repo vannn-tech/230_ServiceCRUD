@@ -73,3 +73,12 @@ test("GET /biodata/:id menolak id yang bukan angka", async () => {
   assert.equal(response.status, 400);
   assert.deepEqual(await response.json(), { message: "id harus berupa angka" });
 });
+
+test("GET /biodata/:id menolak angka yang bukan id positif", async () => {
+  const response = await requestApi(
+    () => assert.fail("Query tidak seharusnya dipanggil"),
+    "/biodata/0"
+  );
+
+  assert.equal(response.status, 400);
+});

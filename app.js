@@ -1,4 +1,5 @@
 import express from "express";
+import { parseId } from "./validation.js";
 
 export function createApp(pool) {
   const app = express();
@@ -21,8 +22,8 @@ export function createApp(pool) {
   app.get("/biodata", getAll);
 
   app.get("/biodata/:id", (req, res) => {
-    const id = Number(req.params.id);
-    if (!Number.isInteger(id)) {
+    const id = parseId(req.params.id);
+    if (id === null) {
       return res.status(400).json({ message: "id harus berupa angka" });
     }
     pool
@@ -58,9 +59,9 @@ export function createApp(pool) {
   });
 
   app.put("/biodata/:id", (req, res) => {
-    const id = Number(req.params.id);
+    const id = parseId(req.params.id);
     const { nama, nim, kelas } = req.body;
-    if (!Number.isInteger(id)) {
+    if (id === null) {
       return res.status(400).json({ message: "id harus berupa angka" });
     }
     if (!nama || !nim || !kelas) {
@@ -86,8 +87,8 @@ export function createApp(pool) {
   });
 
   app.delete("/biodata/:id", (req, res) => {
-    const id = Number(req.params.id);
-    if (!Number.isInteger(id)) {
+    const id = parseId(req.params.id);
+    if (id === null) {
       return res.status(400).json({ message: "id harus berupa angka" });
     }
     pool
