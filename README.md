@@ -2,9 +2,9 @@
 **GET**
 <img width="1919" height="1037" alt="image" src="https://github.com/user-attachments/assets/ae33c901-73aa-4273-88b7-e005f1f755ca" />
 **POST**
-<img width="1919" height="1037" alt="Screenshot 2026-10-20 101702" src="https://github.com/user-attachments/assets/50cab02e-6a66-48f9-ba0a-109a36d7f61b" />
+<img width="1919" height="1033" alt="Screenshot 2026-10-20 103036" src="https://github.com/user-attachments/assets/82a7d631-2e09-4d2d-bf86-8ce848edf563" />
 **DELETE**
-<img width="1919" height="1032" alt="Screenshot 2026-10-20 101724" src="https://github.com/user-attachments/assets/11ce391d-1499-4935-a4f1-897034e9ff16" />
+<img width="1919" height="1026" alt="Screenshot 2026-10-20 103311" src="https://github.com/user-attachments/assets/36455b01-a380-42d3-ba7d-bd7e97c9ffd8" />
 **SS HASIL CHROME**
 <img width="1919" height="990" alt="Screenshot 2026-10-20 094325" src="https://github.com/user-attachments/assets/8cb67788-f9a5-4cfc-928c-e647c22bbc89" />
 
