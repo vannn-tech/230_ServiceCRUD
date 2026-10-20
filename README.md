@@ -1,3 +1,10 @@
+**SS HASIL POSTMAN**
+<img width="1919" height="1037" alt="image" src="https://github.com/user-attachments/assets/ae33c901-73aa-4273-88b7-e005f1f755ca" />
+
+**SS HASIL CHROME**
+<img width="1919" height="990" alt="Screenshot 2026-10-20 094325" src="https://github.com/user-attachments/assets/8cb67788-f9a5-4cfc-928c-e647c22bbc89" />
+
+
 # CRUD Biodata
 
 API sederhana buat ngatur data biodata mahasiswa pakai Express dan PostgreSQL.
