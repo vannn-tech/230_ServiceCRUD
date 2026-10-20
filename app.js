@@ -7,6 +7,16 @@ export function createApp(pool) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+  app.get("/health", (req, res) => {
+    pool
+      .query("SELECT 1")
+      .then(() => res.json({ status: "ok" }))
+      .catch((err) => {
+        console.error(err);
+        res.status(503).json({ status: "error", message: "Database tidak tersedia" });
+      });
+  });
+
   const serverError = (res, err) => {
     console.error(err);
     res.status(500).json({ message: "Internal Server Error" });

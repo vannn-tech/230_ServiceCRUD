@@ -16,6 +16,34 @@ async function requestApi(query, path, options) {
   }
 }
 
+test("GET /health menandakan database aktif", async () => {
+  const response = await requestApi(
+    async (sql) => {
+      assert.equal(sql, "SELECT 1");
+      return { rows: [{ "?column?": 1 }] };
+    },
+    "/health"
+  );
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { status: "ok" });
+});
+
+test("GET /health memberi status 503 kalau database mati", async () => {
+  const response = await requestApi(
+    async () => {
+      throw new Error("database down");
+    },
+    "/health"
+  );
+
+  assert.equal(response.status, 503);
+  assert.deepEqual(await response.json(), {
+    status: "error",
+    message: "Database tidak tersedia",
+  });
+});
+
 test("GET /biodata mengembalikan daftar data", async () => {
   const rows = [{ id: 1, nama: "Ayu", nim: "123", kelas: "TI-5A" }];
   const response = await requestApi(

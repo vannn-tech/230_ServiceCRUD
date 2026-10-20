@@ -14,11 +14,35 @@ const pool = new Pool({
 });
 
 const app = createApp(pool);
-
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`App running on port ${port}.`);
   pool
     .query("SELECT NOW()")
     .then(() => console.log(`Terhubung ke PostgreSQL, database: ${process.env.DB_NAME}`))
     .catch((err) => console.error("Gagal terhubung ke PostgreSQL:", err.message));
 });
+
+let isShuttingDown = false;
+const shutdown = () => {
+  if (isShuttingDown) {
+    return;
+  }
+  isShuttingDown = true;
+  console.log("Menutup server...");
+  server.close((serverError) => {
+    if (serverError) {
+      console.error("Gagal menutup server:", serverError.message);
+      process.exitCode = 1;
+    }
+    pool
+      .end()
+      .then(() => console.log("Koneksi database ditutup."))
+      .catch((err) => {
+        console.error("Gagal menutup koneksi database:", err.message);
+        process.exitCode = 1;
+      });
+  });
+};
+
+process.once("SIGINT", shutdown);
+process.once("SIGTERM", shutdown);
